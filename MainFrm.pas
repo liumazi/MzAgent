@@ -121,6 +121,7 @@ begin
     else if Role = 'observation' then Prefix := '观察: '
     else if Role = 'system' then Prefix := '系统: '
     else if Role = 'error' then Prefix := '错误: '
+    else if Role = 'status' then Prefix := '状态: '
     else Prefix := Role + ': ';
 
     ChatMemo.Lines.Add('');

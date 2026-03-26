@@ -55,14 +55,15 @@ uses
 constructor TReActAgent.Create(ATools: TToolList; const AModel, AProjectDirectory: string);
 begin
   inherited Create;
+
   FTools := ATools;
+  FTools.SetProjectDirectory(AProjectDirectory);
   FModel := AModel;
   FProjectDirectory := AProjectDirectory;
+
   FHttpClient := THTTPClient.Create;
   FMessages := TList<TChatMessage>.Create;
   FApiKey := GetApiKey;
-
-  FTools.SetProjectDirectory(FProjectDirectory);
 
   FHttpClient.CustomHeaders['Authorization'] := 'Bearer ' + FApiKey;
   FHttpClient.CustomHeaders['Content-Type'] := 'application/json';
@@ -72,6 +73,7 @@ destructor TReActAgent.Destroy;
 begin
   FMessages.Free;
   FHttpClient.Free;
+
   inherited;
 end;
 
@@ -92,16 +94,13 @@ begin
       Lines.LoadFromFile(DotEnvPath, TEncoding.UTF8);
       for L in Lines do
       begin
-        Line := Trim(L);
+        Line := L.Trim;
         if Line.StartsWith('API_KEY') then
         begin
           Parts := Line.Split(['='], 2);
           if Length(Parts) = 2 then
           begin
             Result := Parts[1].Trim;
-            if (Result.StartsWith('"') and Result.EndsWith('"')) or
-               (Result.StartsWith('''') and Result.EndsWith('''')) then
-              Result := Result.Substring(1, Result.Length - 2);
             Break;
           end;
         end;
@@ -379,7 +378,6 @@ begin
           Observation := '工具执行错误：' + E.Message;
       end;
     end;
-
     DoLog('observation', Observation);
 
     AddMessage('user', '<observation>' + Observation + '</observation>');
