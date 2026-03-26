@@ -76,21 +76,15 @@ begin
 end;
 
 function TReActAgent.GetApiKey: string;
-  (*
 var
-  EnvValue: string;
   DotEnvPath: string;
   Lines: TStringList;
   Line, L: string;
   Parts: TArray<string>;
-  *)
 begin
-  //Result := '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';
-  //Result := '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';
-  Result := 'sk-xxxxxx';
+  Result := '';
 
-  (*
-  DotEnvPath := TPath.Combine(GetCurrentDir, '.env');
+  DotEnvPath := TPath.Combine(GetCurrentDir, 'MzAgent.ini');
   if FileExists(DotEnvPath) then
   begin
     Lines := TStringList.Create;
@@ -99,7 +93,7 @@ begin
       for L in Lines do
       begin
         Line := Trim(L);
-        if Line.StartsWith('OPENROUTER_API_KEY') then
+        if Line.StartsWith('API_KEY') then
         begin
           Parts := Line.Split(['='], 2);
           if Length(Parts) = 2 then
@@ -118,12 +112,7 @@ begin
   end;
 
   if Result = '' then
-  begin
-    //if not GetEnvironmentVariable('OPENROUTER_API_KEY', EnvValue) then
-    raise Exception.Create('未找到 OPENROUTER_API_KEY 环境变量，请在 .env 文件中设置。');
-    //Result := EnvValue;
-  end;
-  *)
+    raise Exception.Create('请在' + DotEnvPath + '中配置API_KEY');
 end;
 
 procedure TReActAgent.AddMessage(const Role, Content: string);
