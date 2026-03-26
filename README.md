@@ -1,8 +1,9 @@
-# TReActAgent 工作流程文档
+> 本项目由 [MarkTechStation/VideoCode](https://github.com/MarkTechStation/VideoCode/tree/main/Agent%E7%9A%84%E6%A6%82%E5%BF%B5%E3%80%81%E5%8E%9F%E7%90%86%E4%B8%8E%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%BC%8F) 中的示例转换而来。想进一步学习可前往作者主页（各平台链接见 [该仓库 README](https://github.com/MarkTechStation/VideoCode/blob/main/README.md)）。
+
 
 ## 概述
 
-TReActAgent 是一个基于 ReAct (Reasoning + Acting) 模式的 AI Agent，通过调用大语言模型来分解和执行用户任务。
+MzAgent 是一个基于 ReAct (Reasoning + Acting) 模式的 AI Agent，通过调用大语言模型来分解和执行用户任务。
 
 ## 核心组件
 
