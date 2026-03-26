@@ -1,0 +1,32 @@
+# Delphi compiled files
+*.dcu
+*.exe
+*.dll
+*.bpl
+*.dcp
+*.obj
+*.res
+*.tlb
+
+# Delphi project files
+*.dproj.local
+*.dproj.local.cache
+*.identcache
+
+# Build output
+Win32/
+Win64/
+MacOS/
+Android/
+iOS/
+
+# IDE files
+*.DS_Store
+Thumbs.db
+*.~\*
+
+# Backup files
+*.~*
+
+# Local settings
+*.env
