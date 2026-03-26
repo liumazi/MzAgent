@@ -62,6 +62,8 @@ begin
   FMessages := TList<TChatMessage>.Create;
   FApiKey := GetApiKey;
 
+  FTools.SetProjectDirectory(FProjectDirectory);
+
   FHttpClient.CustomHeaders['Authorization'] := 'Bearer ' + FApiKey;
   FHttpClient.CustomHeaders['Content-Type'] := 'application/json';
 end;
@@ -74,12 +76,14 @@ begin
 end;
 
 function TReActAgent.GetApiKey: string;
+  (*
 var
   EnvValue: string;
   DotEnvPath: string;
   Lines: TStringList;
   Line, L: string;
   Parts: TArray<string>;
+  *)
 begin
   Result := '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';
 

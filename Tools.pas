@@ -7,11 +7,14 @@ uses
 
 type
   TBaseTool = class abstract
+  protected
+    FProjectDirectory: string;
   public
     function GetName: string; virtual; abstract;
     function GetSignature: string; virtual; abstract;
     function GetDescription: string; virtual; abstract;
     function Execute(const Args: TArray<string>): string; virtual; abstract;
+    procedure SetProjectDirectory(const Dir: string); virtual;
   end;
 
   TReadFileTool = class(TBaseTool)
@@ -42,12 +45,20 @@ type
   public
     function GetToolByName(const Name: string): TBaseTool;
     function GetToolDescriptions: string;
+    procedure SetProjectDirectory(const Dir: string);
   end;
 
 implementation
 
 uses
   Winapi.Windows, Winapi.ShellAPI, IOUtils;
+
+{ TBaseTool }
+
+procedure TBaseTool.SetProjectDirectory(const Dir: string);
+begin
+  FProjectDirectory := Dir;
+end;
 
 { TReadFileTool }
 
@@ -78,7 +89,9 @@ begin
   end;
 
   FilePath := Args[0];
-  
+  if FProjectDirectory <> '' then
+    FilePath := TPath.Combine(FProjectDirectory, FilePath);
+
   if not FileExists(FilePath) then
   begin
     Result := '错误: 文件不存在 - ' + FilePath;
@@ -128,6 +141,9 @@ begin
   end;
 
   FilePath := Args[0];
+  if FProjectDirectory <> '' then
+    FilePath := TPath.Combine(FProjectDirectory, FilePath);
+
   Content := Args[1];
   Content := StringReplace(Content, '\n', sLineBreak, [rfReplaceAll]);
 
@@ -136,7 +152,7 @@ begin
     try
       ContentList.Text := Content;
       ContentList.SaveToFile(FilePath, TEncoding.UTF8);
-      Result := '写入成功';
+      Result := '写入成功: ' + FilePath;
     finally
       ContentList.Free;
     end;
@@ -178,6 +194,10 @@ begin
   end;
 
   Command := Args[0];
+
+  if FProjectDirectory <> '' then
+    Command := 'cd /d "' + FProjectDirectory + '" && ' + Command;
+
   OutputFile := TPath.GetTempFileName;
 
   try
@@ -251,6 +271,16 @@ begin
     Result := Builder.ToString.TrimRight([#13, #10]);
   finally
     Builder.Free;
+  end;
+end;
+
+procedure TToolList.SetProjectDirectory(const Dir: string);
+var
+  Tool: TBaseTool;
+begin
+  for Tool in Self do
+  begin
+    Tool.SetProjectDirectory(Dir);
   end;
 end;
 
