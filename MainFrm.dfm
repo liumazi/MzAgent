@@ -35,6 +35,7 @@ object MainForm: TMainForm
       Width = 571
       Height = 23
       TabOrder = 0
+      Text = 'C:\Users\liuliu.mz\Desktop\MzTest'
     end
     object btnBrowse: TButton
       Left = 655

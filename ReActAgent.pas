@@ -81,8 +81,9 @@ var
   Line, L: string;
   Parts: TArray<string>;
 begin
-  Result := '';
+  Result := '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';
 
+  (*
   DotEnvPath := TPath.Combine(GetCurrentDir, '.env');
   if FileExists(DotEnvPath) then
   begin
@@ -116,6 +117,7 @@ begin
     raise Exception.Create('未找到 OPENROUTER_API_KEY 环境变量，请在 .env 文件中设置。');
     //Result := EnvValue;
   end;
+  *)
 end;
 
 procedure TReActAgent.AddMessage(const Role, Content: string);

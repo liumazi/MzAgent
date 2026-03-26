@@ -48,7 +48,7 @@ implementation
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  lblProjectDir.Caption := '项目目录:';
+  lblProjectDir.Caption := '项目目录';
   btnBrowse.Caption := '浏览...';
   btnSend.Caption := '发送';
   StatusBar.SimpleText := '就绪';
@@ -189,7 +189,7 @@ begin
   if Assigned(FAgent) then
     FAgent.Free;
 
-  FAgent := TReActAgent.Create(FToolList, 'openai/gpt-4o', edtProjectDir.Text);
+  FAgent := TReActAgent.Create(FToolList, 'openrouter/free', edtProjectDir.Text);
   try
     FAgent.OnLog := OnAgentLog;
     FAgent.OnFinalAnswer := OnAgentFinalAnswer;
