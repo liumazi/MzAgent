@@ -82,7 +82,10 @@ var
 begin
   Dir := edtProjectDir.Text;
   if SelectDirectory('选择项目目录', '', Dir) then
+  begin
+    Dir := Dir + '\';
     edtProjectDir.Text := Dir;
+  end;
 end;
 
 function TMainForm.CheckProjectDir: Boolean;

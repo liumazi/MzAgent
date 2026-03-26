@@ -7,6 +7,8 @@ uses
 
 type
   TBaseTool = class abstract
+  private
+    function GetAbsolutePath(SubPath: string): string;
   protected
     FProjectDirectory: string;
   public
@@ -55,6 +57,19 @@ uses
 
 { TBaseTool }
 
+function TBaseTool.GetAbsolutePath(SubPath: string): string;
+begin
+  // TODO: 不同模型传回的文件名规则不同
+  if (Length(SubPath) > 2) then
+    if (SubPath[1] = '/') then
+      Delete(SubPath, 1, 1)
+    else
+      if SubPath[2] = ':' then
+        Delete(SubPath, 1, 3);
+
+  Result := FProjectDirectory + SubPath;
+end;
+
 procedure TBaseTool.SetProjectDirectory(const Dir: string);
 begin
   FProjectDirectory := Dir;
@@ -88,10 +103,7 @@ begin
     Exit;
   end;
 
-  FilePath := Args[0];
-  if FProjectDirectory <> '' then
-    FilePath := TPath.Combine(FProjectDirectory, FilePath);
-
+  FilePath := GetAbsolutePath(Args[0]);
   if not FileExists(FilePath) then
   begin
     Result := '错误: 文件不存在 - ' + FilePath;
@@ -140,10 +152,7 @@ begin
     Exit;
   end;
 
-  FilePath := Args[0];
-  if FProjectDirectory <> '' then
-    FilePath := TPath.Combine(FProjectDirectory, FilePath);
-
+  FilePath := GetAbsolutePath(Args[0]);
   Content := Args[1];
   Content := StringReplace(Content, '\n', sLineBreak, [rfReplaceAll]);
 
