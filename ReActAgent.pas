@@ -85,7 +85,9 @@ var
   Parts: TArray<string>;
   *)
 begin
-  Result := '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';
+  //Result := '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';
+  //Result := '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';
+  Result := 'sk-xxxxxx';
 
   (*
   DotEnvPath := TPath.Combine(GetCurrentDir, '.env');
@@ -165,7 +167,7 @@ begin
     end;
     RequestBody.AddPair('messages', MessagesArray);
 
-    Response := FHttpClient.Post('https://openrouter.ai/api/v1/chat/completions',
+    Response := FHttpClient.Post('https://api.deepseek.com/v1/chat/completions',
       TStringStream.Create(RequestBody.ToJSON, TEncoding.UTF8));
 
     if Response.StatusCode <> 200 then

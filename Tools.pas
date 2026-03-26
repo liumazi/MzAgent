@@ -60,14 +60,18 @@ uses
 function TBaseTool.GetAbsolutePath(SubPath: string): string;
 begin
   // TODO: 不同模型传回的文件名规则不同
+  (*
   if (Length(SubPath) > 2) then
     if (SubPath[1] = '/') then
       Delete(SubPath, 1, 1)
     else
       if SubPath[2] = ':' then
         Delete(SubPath, 1, 3);
-
-  Result := FProjectDirectory + SubPath;
+  *)
+  if SubPath[2] = ':' then
+    Result := SubPath
+  else
+    Result := FProjectDirectory + SubPath;
 end;
 
 procedure TBaseTool.SetProjectDirectory(const Dir: string);

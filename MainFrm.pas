@@ -192,7 +192,7 @@ begin
   if Assigned(FAgent) then
     FAgent.Free;
 
-  FAgent := TReActAgent.Create(FToolList, 'openrouter/free', edtProjectDir.Text);
+  FAgent := TReActAgent.Create(FToolList, 'deepseek-coder', edtProjectDir.Text);
   try
     FAgent.OnLog := OnAgentLog;
     FAgent.OnFinalAnswer := OnAgentFinalAnswer;
