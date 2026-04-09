@@ -231,7 +231,7 @@ begin
 
       OutputContent := TStringList.Create;
       try
-        OutputContent.LoadFromFile(OutputFile, TEncoding.UTF8);
+        OutputContent.LoadFromFile(OutputFile); // , TEncoding.UTF8
         if ExitCode = 0 then
           Result := '执行成功' + sLineBreak + OutputContent.Text
         else
