@@ -5,6 +5,8 @@
 
 MzAgent 是一个基于 ReAct (Reasoning + Acting) 模式的 AI Agent，通过调用大语言模型来分解和执行用户任务。
 
+![MzAgent Screenshot](./ScreenShot.png)
+
 ## 核心组件
 
 ### 1. TReActAgent 类
