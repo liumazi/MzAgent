@@ -3,8 +3,8 @@ unit MzAgentIDEDockForm;
 interface
 
 uses
-  ToolsAPI, Classes, Vcl.Forms, Vcl.ActnList, Vcl.ImgList, System.IniFiles,
-  MzAgentIDEFrame;
+  ToolsAPI, Classes, DesignIntf, Vcl.Forms, Vcl.ActnList, Vcl.ImgList,
+  Vcl.Menus, Vcl.ComCtrls, System.IniFiles, MzAgentIDEFrame;
 
 type
   TMzAgentIDEDockForm = class(TInterfacedObject, INTACustomDockableForm)
@@ -17,8 +17,10 @@ type
     procedure FrameCreated(AFrame: TCustomFrame);
     function GetMenuActionList: TCustomActionList;
     function GetMenuImageList: TCustomImageList;
-    function GetToolbarActionList: TCustomActionList;
-    function GetToolbarImageList: TCustomImageList;
+    procedure CustomizePopupMenu(PopupMenu: TPopupMenu);
+    function GetToolBarActionList: TCustomActionList;
+    function GetToolBarImageList: TCustomImageList;
+    procedure CustomizeToolBar(ToolBar: TToolBar);
     procedure SaveWindowState(Desktop: TCustomIniFile; const Section: string;
       IsProject: Boolean);
     procedure LoadWindowState(Desktop: TCustomIniFile; const Section: string);
@@ -58,14 +60,22 @@ begin
   Result := nil;
 end;
 
-function TMzAgentIDEDockForm.GetToolbarActionList: TCustomActionList;
+procedure TMzAgentIDEDockForm.CustomizePopupMenu(PopupMenu: TPopupMenu);
+begin
+end;
+
+function TMzAgentIDEDockForm.GetToolBarActionList: TCustomActionList;
 begin
   Result := nil;
 end;
 
-function TMzAgentIDEDockForm.GetToolbarImageList: TCustomImageList;
+function TMzAgentIDEDockForm.GetToolBarImageList: TCustomImageList;
 begin
   Result := nil;
+end;
+
+procedure TMzAgentIDEDockForm.CustomizeToolBar(ToolBar: TToolBar);
+begin
 end;
 
 procedure TMzAgentIDEDockForm.SaveWindowState(Desktop: TCustomIniFile;

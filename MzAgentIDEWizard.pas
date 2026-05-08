@@ -7,48 +7,18 @@ uses
 
 type
   TMzAgentIDEWizard = class(TNotifierObject, IOTAWizard, IOTAMenuWizard)
-  private
-    class var FWizardIndex: Integer;
-    class constructor Create;
   public
     function GetIDString: string;
     function GetName: string;
     function GetState: TWizardState;
     procedure Execute;
     function GetMenuText: string;
-    class procedure RegisterWizard;
-    class procedure UnregisterWizard;
   end;
 
 implementation
 
 uses
   MzAgentIDEDockForm;
-
-class constructor TMzAgentIDEWizard.Create;
-begin
-  FWizardIndex := -1;
-end;
-
-class procedure TMzAgentIDEWizard.RegisterWizard;
-var
-  WizardServices: IOTAWizardServices;
-begin
-  if Supports(BorlandIDEServices, IOTAWizardServices, WizardServices) then
-    FWizardIndex := WizardServices.AddWizard(TMzAgentIDEWizard.Create);
-end;
-
-class procedure TMzAgentIDEWizard.UnregisterWizard;
-var
-  WizardServices: IOTAWizardServices;
-begin
-  if (FWizardIndex >= 0) and
-     Supports(BorlandIDEServices, IOTAWizardServices, WizardServices) then
-  begin
-    WizardServices.RemoveWizard(FWizardIndex);
-    FWizardIndex := -1;
-  end;
-end;
 
 function TMzAgentIDEWizard.GetIDString: string;
 begin
@@ -71,11 +41,13 @@ begin
 end;
 
 procedure TMzAgentIDEWizard.Execute;
-var
-  Services: INTAServices;
 begin
-  if Supports(BorlandIDEServices, INTAServices, Services) then
-    Services.CreateDockableForm(TMzAgentIDEDockForm.Create);
+  (BorlandIDEServices as INTAServices).CreateDockableForm(TMzAgentIDEDockForm.Create);
+end;
+
+procedure Register;
+begin
+  RegisterPackageWizard(TMzAgentIDEWizard.Create);
 end;
 
 end.

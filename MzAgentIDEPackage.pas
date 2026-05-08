@@ -13,7 +13,7 @@ procedure Register;
 begin
   (BorlandIDEServices as INTAServices).RegisterDockableForm(
     TMzAgentIDEDockForm.Create);
-  TMzAgentIDEWizard.RegisterWizard;
+  RegisterPackageWizard(TMzAgentIDEWizard.Create);
 end;
 
 end.

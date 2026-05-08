@@ -79,15 +79,34 @@ end;
 
 function TReActAgent.GetApiKey: string;
 var
+  SearchPaths: TArray<string>;
   DotEnvPath: string;
   Lines: TStringList;
-  Line, L: string;
+  Line, L, P: string;
   Parts: TArray<string>;
+  AttemptedPaths: string;
 begin
   Result := '';
 
-  DotEnvPath := TPath.Combine(GetCurrentDir, 'MzAgent.ini');
-  if FileExists(DotEnvPath) then
+  SearchPaths := TArray<string>.Create(
+    TPath.Combine(FProjectDirectory, 'MzAgent.ini'),
+    TPath.Combine(GetCurrentDir, 'MzAgent.ini'),
+    TPath.Combine(TPath.GetHomePath, 'MzAgent.ini')
+  );
+
+  AttemptedPaths := '';
+  for P in SearchPaths do
+  begin
+    AttemptedPaths := AttemptedPaths + sLineBreak + '  ' + P;
+    if FileExists(P) then
+    begin
+      DotEnvPath := P;
+      Break;
+    end;
+    DotEnvPath := '';
+  end;
+
+  if DotEnvPath <> '' then
   begin
     Lines := TStringList.Create;
     try
@@ -111,7 +130,7 @@ begin
   end;
 
   if Result = '' then
-    raise Exception.Create('请在' + DotEnvPath + '中配置API_KEY');
+    raise Exception.Create('未找到 MzAgent.ini 或其中未配置 API_KEY。已尝试路径：' + AttemptedPaths);
 end;
 
 procedure TReActAgent.AddMessage(const Role, Content: string);
