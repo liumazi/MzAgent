@@ -10,20 +10,20 @@ uses
 type
   TMzAgentIDEFrame = class(TFrame)
     TopPanel: TPanel;
-    lblProjectDir: TLabel;
-    edtProjectDir: TEdit;
-    btnRefresh: TButton;
+    ProjectDirLb: TLabel;
+    ProjectDirEdit: TEdit;
+    RefreshBtn: TButton;
     ChatPanel: TPanel;
     ChatMemo: TRichEdit;
     BottomPanel: TPanel;
     InputPanel: TPanel;
     InputMemo: TMemo;
     SendPanel: TPanel;
-    btnSend: TButton;
+    SendBtn: TButton;
     StatusBar: TStatusBar;
-    procedure btnSendClick(Sender: TObject);
+    procedure SendBtnClick(Sender: TObject);
     procedure InputMemoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure btnRefreshClick(Sender: TObject);
+    procedure RefreshBtnClick(Sender: TObject);
   private
     FAgent: TReActAgent;
     FToolList: TToolList;
@@ -50,9 +50,9 @@ constructor TMzAgentIDEFrame.Create(AOwner: TComponent);
 begin
   inherited;
 
-  lblProjectDir.Caption := 'Project Dir';
-  btnRefresh.Caption := 'Refresh';
-  btnSend.Caption := 'Send';
+  ProjectDirLb.Caption := 'Project Dir';
+  RefreshBtn.Caption := 'Refresh';
+  SendBtn.Caption := 'Send';
   StatusBar.SimpleText := 'Ready';
 
   ChatMemo.Font.Name := 'Microsoft YaHei UI';
@@ -90,7 +90,7 @@ var
   Project: IOTAProject;
   I: Integer;
 begin
-  edtProjectDir.Text := '';
+  ProjectDirEdit.Text := '';
   if Supports(BorlandIDEServices, IOTAModuleServices, ModuleServices) then
   begin
     for I := 0 to ModuleServices.ModuleCount - 1 do
@@ -98,18 +98,18 @@ begin
       if Supports(ModuleServices.Modules[I], IOTAProject, Project) and
          (Project.FileName <> '') then
       begin
-        edtProjectDir.Text := ExtractFilePath(Project.FileName);
+        ProjectDirEdit.Text := ExtractFilePath(Project.FileName);
         Exit;
       end;
     end;
   end;
 end;
 
-procedure TMzAgentIDEFrame.btnRefreshClick(Sender: TObject);
+procedure TMzAgentIDEFrame.RefreshBtnClick(Sender: TObject);
 begin
   RefreshProjectDir;
-  if edtProjectDir.Text <> '' then
-    StatusBar.SimpleText := 'Project: ' + edtProjectDir.Text
+  if ProjectDirEdit.Text <> '' then
+    StatusBar.SimpleText := 'Project: ' + ProjectDirEdit.Text
   else
     StatusBar.SimpleText := 'No project opened';
 end;
@@ -147,8 +147,8 @@ end;
 procedure TMzAgentIDEFrame.EnableControls(Enabled: Boolean);
 begin
   FIsRunning := not Enabled;
-  btnSend.Enabled := Enabled;
-  btnRefresh.Enabled := Enabled;
+  SendBtn.Enabled := Enabled;
+  RefreshBtn.Enabled := Enabled;
   InputMemo.Enabled := Enabled;
 
   if Enabled then
@@ -157,14 +157,14 @@ begin
     StatusBar.SimpleText := 'Processing...';
 end;
 
-procedure TMzAgentIDEFrame.btnSendClick(Sender: TObject);
+procedure TMzAgentIDEFrame.SendBtnClick(Sender: TObject);
 var
   UserInput: string;
 begin
   if FIsRunning then
     Exit;
 
-  if edtProjectDir.Text = '' then
+  if ProjectDirEdit.Text = '' then
   begin
     AddChatMessage('system',
       'Please open a project in the IDE first, or click Refresh to detect it.', clRed);
@@ -206,7 +206,7 @@ begin
   if Assigned(FAgent) then
     FAgent.Free;
 
-  FAgent := TReActAgent.Create(FToolList, 'deepseek-coder', edtProjectDir.Text);
+  FAgent := TReActAgent.Create(FToolList, 'deepseek-coder', ProjectDirEdit.Text);
   try
     FAgent.OnLog := OnAgentLog;
     FAgent.OnFinalAnswer := OnAgentFinalAnswer;
@@ -261,7 +261,7 @@ begin
   if (Key = VK_RETURN) and (ssCtrl in Shift) then
   begin
     Key := 0;
-    btnSendClick(nil);
+    SendBtnClick(nil);
   end;
 end;
 

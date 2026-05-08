@@ -12,14 +12,14 @@ object MzAgentIDEFrame: TMzAgentIDEFrame
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    object lblProjectDir: TLabel
+    object ProjectDirLb: TLabel
       Left = 16
       Top = 13
       Width = 55
       Height = 15
       Caption = 'Project Dir'
     end
-    object edtProjectDir: TEdit
+    object ProjectDirEdit: TEdit
       Left = 78
       Top = 10
       Width = 491
@@ -27,14 +27,14 @@ object MzAgentIDEFrame: TMzAgentIDEFrame
       TabOrder = 0
       ReadOnly = True
     end
-    object btnRefresh: TButton
+    object RefreshBtn: TButton
       Left = 575
       Top = 9
       Width = 55
       Height = 25
       Caption = 'Refresh'
       TabOrder = 1
-      OnClick = btnRefreshClick
+      OnClick = RefreshBtnClick
     end
   end
   object ChatPanel: TPanel
@@ -104,7 +104,7 @@ object MzAgentIDEFrame: TMzAgentIDEFrame
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 1
-      object btnSend: TButton
+      object SendBtn: TButton
         Left = 8
         Top = 35
         Width = 70
@@ -112,7 +112,7 @@ object MzAgentIDEFrame: TMzAgentIDEFrame
         Caption = 'Send'
         Default = True
         TabOrder = 0
-        OnClick = btnSendClick
+        OnClick = SendBtnClick
       end
     end
   end
