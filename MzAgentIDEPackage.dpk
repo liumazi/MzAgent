@@ -1,0 +1,21 @@
+package MzAgentIDEPackage;
+
+{$R *.res}
+{$IMPLICITBUILD ON}
+{$DESIGNONLY}
+
+requires
+  rtl,
+  vcl,
+  designide;
+
+contains
+  MzAgentIDEPackage in 'MzAgentIDEPackage.pas',
+  MzAgentIDEWizard in 'MzAgentIDEWizard.pas',
+  MzAgentIDEDockForm in 'MzAgentIDEDockForm.pas',
+  MzAgentIDEFrame in 'MzAgentIDEFrame.pas' {TMzAgentIDEFrame: TFrame},
+  ReActAgent in 'ReActAgent.pas',
+  Tools in 'Tools.pas',
+  PromptTemplate in 'PromptTemplate.pas';
+
+end.
