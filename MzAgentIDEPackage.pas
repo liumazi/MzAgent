@@ -3,7 +3,8 @@ unit MzAgentIDEPackage;
 interface
 
 uses
-  Winapi.Windows, System.SysUtils, ToolsAPI, MzAgentIDEWizard, MzAgentIDEDockForm;
+  Winapi.Windows, System.SysUtils, ToolsAPI, MzAgentIDEWizard, MzAgentIDEDockForm,
+  MzAgentIDESplash;
 
 function INITWIZARD0001(const BorlandIDEServices: IBorlandIDEServices;
   RegisterProc: TWizardRegisterProc;
@@ -60,6 +61,8 @@ begin
 
   Wizard := TMzAgentIDEWizard.Create;
   FWizardIndex := WizardServices.AddWizard(Wizard);
+
+  RegisterSplashScreen;
 
   Terminate := FinalizeWizard;
   Result := True;
