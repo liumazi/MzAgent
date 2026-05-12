@@ -1,12 +1,12 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{FF60136B-1340-450A-A99A-666053875DF2}</ProjectGuid>
-        <MainSource>MzAgentIDEPackage.dpk</MainSource>
+        <MainSource>MzAgentIDEPackage.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <ProjectName Condition="'$(ProjectName)'==''">MzAgentIDEPackage</ProjectName>
         <TargetedPlatforms>1</TargetedPlatforms>
-        <AppType>Package</AppType>
+        <AppType>Dll</AppType>
         <FrameworkType>VCL</FrameworkType>
         <ProjectVersion>20.2</ProjectVersion>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -52,9 +52,7 @@
         <DCC_S>false</DCC_S>
         <DCC_ImageBase>00400000</DCC_ImageBase>
         <GenDll>true</GenDll>
-        <GenPackage>true</GenPackage>
         <SanitizedProjectName>MzAgentIDEPackage</SanitizedProjectName>
-        <DesignOnlyPackage>true</DesignOnlyPackage>
         <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;DUnitX.Loggers.GUI;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_Locale>2052</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=;CFBundleName=</VerInfo_Keys>
@@ -96,9 +94,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="rtl.dcp"/>
-        <DCCReference Include="vcl.dcp"/>
-        <DCCReference Include="designide.dcp"/>
+
         <DCCReference Include="MzAgentIDEPackage.pas"/>
         <DCCReference Include="MzAgentIDEWizard.pas"/>
         <DCCReference Include="MzAgentIDEDockForm.pas"/>
@@ -123,11 +119,11 @@
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Delphi.Personality.12</Borland.Personality>
-        <Borland.ProjectType>Package</Borland.ProjectType>
+        <Borland.ProjectType>Dll</Borland.ProjectType>
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">MzAgentIDEPackage.dpk</Source>
+                    <Source Name="MainSource">MzAgentIDEPackage.dpr</Source>
                 </Source>
             </Delphi.Personality>
             <Platforms>

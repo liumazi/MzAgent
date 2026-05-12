@@ -45,9 +45,4 @@ begin
   (BorlandIDEServices as INTAServices).CreateDockableForm(TMzAgentIDEDockForm.Create);
 end;
 
-procedure Register;
-begin
-  RegisterPackageWizard(TMzAgentIDEWizard.Create);
-end;
-
 end.
