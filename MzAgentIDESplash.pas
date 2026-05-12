@@ -1,4 +1,4 @@
-unit MzAgentIDESplash;
+﻿unit MzAgentIDESplash;
 
 interface
 
@@ -17,7 +17,7 @@ begin
   //  SplashServices.AddPluginBitmap('MzAgent v0.1', 0, False, 'Open Source', '');
   if Assigned(SplashScreenServices) then
   begin
-    SplashScreenServices.AddPluginBitmap('MzAgent 0.1', 0);
+    SplashScreenServices.AddPluginBitmap('MzAgent Wizard 0.1', 0);
   end;
 end;
 
