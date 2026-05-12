@@ -87,21 +87,33 @@ end;
 procedure TMzAgentIDEFrame.RefreshProjectDir;
 var
   ModuleServices: IOTAModuleServices;
+  ProjectGroup: IOTAProjectGroup;
   Project: IOTAProject;
   I: Integer;
 begin
   ProjectDirEdit.Text := '';
   if Supports(BorlandIDEServices, IOTAModuleServices, ModuleServices) then
   begin
-    for I := 0 to ModuleServices.ModuleCount - 1 do
+    ProjectGroup := ModuleServices.MainProjectGroup;
+    if Assigned(ProjectGroup) then
+      Project := ProjectGroup.ActiveProject
+    else
+      Project := nil;
+
+    if not Assigned(Project) or (Project.FileName = '') then
     begin
-      if Supports(ModuleServices.Modules[I], IOTAProject, Project) and
-         (Project.FileName <> '') then
+      for I := 0 to ModuleServices.ModuleCount - 1 do
       begin
-        ProjectDirEdit.Text := ExtractFilePath(Project.FileName);
-        Exit;
+        if Supports(ModuleServices.Modules[I], IOTAProject, Project) and
+           (Project.FileName <> '') then
+          Break
+        else
+          Project := nil;
       end;
     end;
+
+    if Assigned(Project) then
+      ProjectDirEdit.Text := ExtractFilePath(Project.FileName);
   end;
 end;
 
