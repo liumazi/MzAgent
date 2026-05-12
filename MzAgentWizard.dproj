@@ -68,12 +68,6 @@
         <Cfg_2>true</Cfg_2>
         <Base>true</Base>
     </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
-        <Cfg_2_Win32>true</Cfg_2_Win32>
-        <CfgParent>Cfg_2</CfgParent>
-        <Cfg_2>true</Cfg_2>
-        <Base>true</Base>
-    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_E>false</DCC_E>
         <DCC_F>false</DCC_F>
@@ -138,7 +132,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="MzAgentIDEPackage.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
