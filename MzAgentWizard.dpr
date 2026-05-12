@@ -1,4 +1,4 @@
-library MzAgentIDEPackage;
+library MzAgentWizard;
 
 {$R *.res}
 
