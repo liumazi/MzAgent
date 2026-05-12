@@ -2,61 +2,67 @@ unit MzAgentIDEPackage;
 
 interface
 
-procedure Register;
-
-implementation
-
 uses
   Winapi.Windows, System.SysUtils, ToolsAPI, MzAgentIDEWizard, MzAgentIDEDockForm;
+
+function INITWIZARD0001(const BorlandIDEServices: IBorlandIDEServices;
+  RegisterProc: TWizardRegisterProc;
+  var Terminate: TWizardTerminateProc): Boolean; stdcall;
+
+implementation
 
 var
   FDockableForm: TMzAgentIDEDockForm;
   FWizardIndex: Integer = -1;
 
-procedure Register;
+procedure FinalizeWizard;
 var
   Services: INTAServices;
   WizardServices: IOTAWizardServices;
 begin
-  OutputDebugString('Register: enter');
+  if Assigned(BorlandIDEServices) then
+  begin
+    if Assigned(FDockableForm) then
+    begin
+      Services := BorlandIDEServices as INTAServices;
+      Services.UnregisterDockableForm(FDockableForm);
+      FDockableForm := nil;
+    end;
+
+    if FWizardIndex >= 0 then
+    begin
+      WizardServices := BorlandIDEServices as IOTAWizardServices;
+      WizardServices.RemoveWizard(FWizardIndex);
+      FWizardIndex := -1;
+    end;
+  end;
+end;
+
+function INITWIZARD0001(const BorlandIDEServices: IBorlandIDEServices;
+  RegisterProc: TWizardRegisterProc;
+  var Terminate: TWizardTerminateProc): Boolean;
+var
+  Services: INTAServices;
+  WizardServices: IOTAWizardServices;
+  Wizard: IOTAWizard;
+begin
+  Result := False;
+  Terminate := nil;
 
   if not Assigned(BorlandIDEServices) then
-  begin
-    OutputDebugString('Register: BorlandIDEServices nil, exit');
     Exit;
-  end;
-  OutputDebugString('Register: BorlandIDEServices OK');
 
   Services := BorlandIDEServices as INTAServices;
   WizardServices := BorlandIDEServices as IOTAWizardServices;
-  OutputDebugString('Register: Services obtained');
-
-  if Assigned(FDockableForm) then
-  begin
-    OutputDebugString('Register: UnregisterDockableForm...');
-    Services.UnregisterDockableForm(FDockableForm);
-    OutputDebugString('Register: UnregisterDockableForm OK');
-    FDockableForm := nil;
-  end;
 
   FDockableForm := TMzAgentIDEDockForm.Create;
-  OutputDebugString('Register: RegisterDockableForm...');
   Services.RegisterDockableForm(FDockableForm);
-  OutputDebugString('Register: RegisterDockableForm OK');
 
-  if FWizardIndex >= 0 then
-  begin
-    OutputDebugString('Register: RemoveWizard...');
-    WizardServices.RemoveWizard(FWizardIndex);
-    OutputDebugString('Register: RemoveWizard OK');
-    FWizardIndex := -1;
-  end;
+  Wizard := TMzAgentIDEWizard.Create;
+  FWizardIndex := WizardServices.AddWizard(Wizard);
 
-  OutputDebugString('Register: AddWizard...');
-  FWizardIndex := WizardServices.AddWizard(TMzAgentIDEWizard.Create);
-  OutputDebugString(PChar('Register: AddWizard OK, index=' + IntToStr(FWizardIndex)));
-
-  OutputDebugString('Register: exit');
+  Terminate := FinalizeWizard;
+  Result := True;
 end;
 
 end.

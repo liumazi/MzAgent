@@ -6,7 +6,7 @@ uses
   MzAgentIDEPackage in 'MzAgentIDEPackage.pas';
 
 exports
-  Register;
+  INITWIZARD0001;
 
 begin
 end.
