@@ -3,7 +3,7 @@ unit MzAgentIDEPackage;
 interface
 
 uses
-  Winapi.Windows, System.SysUtils, ToolsAPI, MzAgentIDEWizard, MzAgentIDEDockForm,
+  Winapi.Windows, System.SysUtils, ToolsAPI, MzAgentIDEWizard, MzAgentIDEForm,
   MzAgentIDESplash;
 
 function INITWIZARD0001(const BorlandIDEServices: IBorlandIDEServices;
@@ -13,7 +13,7 @@ function INITWIZARD0001(const BorlandIDEServices: IBorlandIDEServices;
 implementation
 
 var
-  FDockableForm: TMzAgentIDEDockForm;
+  FDockableForm: TMzAgentIDEForm;
   FWizardIndex: Integer = -1;
 
 procedure FinalizeWizard;
@@ -56,7 +56,7 @@ begin
   Services := BorlandIDEServices as INTAServices;
   WizardServices := BorlandIDEServices as IOTAWizardServices;
 
-  FDockableForm := TMzAgentIDEDockForm.Create;
+  FDockableForm := TMzAgentIDEForm.Create;
   Services.RegisterDockableForm(FDockableForm);
 
   Wizard := TMzAgentIDEWizard.Create;

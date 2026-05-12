@@ -1,4 +1,4 @@
-unit MzAgentIDEDockForm;
+unit MzAgentIDEForm;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   Vcl.Menus, Vcl.ComCtrls, System.IniFiles, MzAgentIDEFrame;
 
 type
-  TMzAgentIDEDockForm = class(TInterfacedObject, INTACustomDockableForm)
+  TMzAgentIDEForm = class(TInterfacedObject, INTACustomDockableForm)
   private
     FFrame: TMzAgentIDEFrame;
   public
@@ -30,70 +30,70 @@ type
 
 implementation
 
-function TMzAgentIDEDockForm.GetCaption: string;
+function TMzAgentIDEForm.GetCaption: string;
 begin
   Result := 'MzAgent';
 end;
 
-function TMzAgentIDEDockForm.GetIdentifier: string;
+function TMzAgentIDEForm.GetIdentifier: string;
 begin
   Result := 'MzAgent.DockableForm';
 end;
 
-function TMzAgentIDEDockForm.GetFrameClass: TCustomFrameClass;
+function TMzAgentIDEForm.GetFrameClass: TCustomFrameClass;
 begin
   Result := TMzAgentIDEFrame;
 end;
 
-procedure TMzAgentIDEDockForm.FrameCreated(AFrame: TCustomFrame);
+procedure TMzAgentIDEForm.FrameCreated(AFrame: TCustomFrame);
 begin
   FFrame := AFrame as TMzAgentIDEFrame;
 end;
 
-function TMzAgentIDEDockForm.GetMenuActionList: TCustomActionList;
+function TMzAgentIDEForm.GetMenuActionList: TCustomActionList;
 begin
   Result := nil;
 end;
 
-function TMzAgentIDEDockForm.GetMenuImageList: TCustomImageList;
+function TMzAgentIDEForm.GetMenuImageList: TCustomImageList;
 begin
   Result := nil;
 end;
 
-procedure TMzAgentIDEDockForm.CustomizePopupMenu(PopupMenu: TPopupMenu);
+procedure TMzAgentIDEForm.CustomizePopupMenu(PopupMenu: TPopupMenu);
 begin
 end;
 
-function TMzAgentIDEDockForm.GetToolBarActionList: TCustomActionList;
-begin
-  Result := nil;
-end;
-
-function TMzAgentIDEDockForm.GetToolBarImageList: TCustomImageList;
+function TMzAgentIDEForm.GetToolBarActionList: TCustomActionList;
 begin
   Result := nil;
 end;
 
-procedure TMzAgentIDEDockForm.CustomizeToolBar(ToolBar: TToolBar);
+function TMzAgentIDEForm.GetToolBarImageList: TCustomImageList;
+begin
+  Result := nil;
+end;
+
+procedure TMzAgentIDEForm.CustomizeToolBar(ToolBar: TToolBar);
 begin
 end;
 
-procedure TMzAgentIDEDockForm.SaveWindowState(Desktop: TCustomIniFile;
+procedure TMzAgentIDEForm.SaveWindowState(Desktop: TCustomIniFile;
   const Section: string; IsProject: Boolean);
 begin
 end;
 
-procedure TMzAgentIDEDockForm.LoadWindowState(Desktop: TCustomIniFile;
+procedure TMzAgentIDEForm.LoadWindowState(Desktop: TCustomIniFile;
   const Section: string);
 begin
 end;
 
-function TMzAgentIDEDockForm.GetEditState: TEditState;
+function TMzAgentIDEForm.GetEditState: TEditState;
 begin
   Result := [];
 end;
 
-function TMzAgentIDEDockForm.EditAction(Action: TEditAction): Boolean;
+function TMzAgentIDEForm.EditAction(Action: TEditAction): Boolean;
 begin
   Result := False;
 end;

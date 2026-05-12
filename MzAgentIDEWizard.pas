@@ -18,7 +18,7 @@ type
 implementation
 
 uses
-  MzAgentIDEDockForm;
+  MzAgentIDEForm;
 
 function TMzAgentIDEWizard.GetIDString: string;
 begin
@@ -42,7 +42,7 @@ end;
 
 procedure TMzAgentIDEWizard.Execute;
 begin
-  (BorlandIDEServices as INTAServices).CreateDockableForm(TMzAgentIDEDockForm.Create);
+  (BorlandIDEServices as INTAServices).CreateDockableForm(TMzAgentIDEForm.Create);
 end;
 
 end.
