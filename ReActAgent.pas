@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, System.Generics.Collections, System.RegularExpressions,
-  System.Net.HttpClient, System.Net.URLClient, System.JSON, Tools, PromptTemplate;
+  System.Net.HttpClient, System.Net.URLClient, System.JSON, Tools, PromptTemplate, Configuration;
 
 type
   TChatMessage = record
@@ -79,57 +79,10 @@ end;
 
 function TReActAgent.GetApiKey: string;
 var
-  SearchPaths: TArray<string>;
-  DotEnvPath: string;
-  Lines: TStringList;
-  Line, L, P: string;
-  Parts: TArray<string>;
+  ConfigPath: string;
   AttemptedPaths: string;
 begin
-  Result := '';
-
-  SearchPaths := TArray<string>.Create(
-    TPath.Combine(FProjectDirectory, 'MzAgent.ini'),
-    TPath.Combine(GetCurrentDir, 'MzAgent.ini'),
-    TPath.Combine(TPath.GetHomePath, 'MzAgent.ini')
-  );
-
-  AttemptedPaths := '';
-  for P in SearchPaths do
-  begin
-    AttemptedPaths := AttemptedPaths + sLineBreak + '  ' + P;
-    if FileExists(P) then
-    begin
-      DotEnvPath := P;
-      Break;
-    end;
-    DotEnvPath := '';
-  end;
-
-  if DotEnvPath <> '' then
-  begin
-    Lines := TStringList.Create;
-    try
-      Lines.LoadFromFile(DotEnvPath, TEncoding.UTF8);
-      for L in Lines do
-      begin
-        Line := L.Trim;
-        if Line.StartsWith('API_KEY') then
-        begin
-          Parts := Line.Split(['='], 2);
-          if Length(Parts) = 2 then
-          begin
-            Result := Parts[1].Trim;
-            Break;
-          end;
-        end;
-      end;
-    finally
-      Lines.Free;
-    end;
-  end;
-
-  if Result = '' then
+  if not TConfiguration.TryReadValue(FProjectDirectory, 'API_KEY', Result, ConfigPath, AttemptedPaths) or (Result = '') then
     raise Exception.Create('未找到 MzAgent.ini 或其中未配置 API_KEY。已尝试路径：' + AttemptedPaths);
 end;
 

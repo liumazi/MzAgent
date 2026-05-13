@@ -3,9 +3,9 @@
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
-  Vcl.ComCtrls, Tools, ReActAgent, System.Threading, Vcl.FileCtrl;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.Threading,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.FileCtrl,
+  Tools, ReActAgent, Configuration, McpStdioClient;
 
 type
   TMainForm = class(TForm)
@@ -33,6 +33,7 @@ type
     procedure AddChatMessage(const Role, Content: string; Color: TColor = clBlack);
     procedure EnableControls(Enabled: Boolean);
     procedure DoAgentRun(const UserInput: string);
+    procedure DiscoverMcpTools;
     procedure OnAgentLog(const LogType, Message: string);
     procedure OnAgentFinalAnswer(const Answer: string);
     function CheckProjectDir: Boolean;
@@ -190,6 +191,8 @@ procedure TMainForm.DoAgentRun(const UserInput: string);
 var
   FinalAnswer: string;
 begin
+  DiscoverMcpTools;
+
   if Assigned(FAgent) then
     FAgent.Free;
 
@@ -216,6 +219,56 @@ begin
           EnableControls(True);
         end);
     end;
+  end;
+end;
+
+procedure TMainForm.DiscoverMcpTools;
+var
+  McpPath, ConfigPath, AttemptedPaths: string;
+  Client: TMcpStdioClient;
+  Tools: TMcpToolInfoArray;
+  Tool: TMcpToolInfo;
+  Builder: TStringBuilder;
+begin
+  if not TConfiguration.TryReadValue(edtProjectDir.Text, 'MCP_PATH', McpPath, ConfigPath, AttemptedPaths) or (McpPath = '') then
+    Exit;
+
+  try
+    OnAgentLog('status', '正在初始化 MCP: ' + McpPath);
+    Client := TMcpStdioClient.Create(McpPath);
+    try
+      Tools := Client.DiscoverTools;
+    finally
+      Client.Free;
+    end;
+
+    if Length(Tools) = 0 then
+    begin
+      OnAgentLog('status', 'MCP 已初始化，tools/list 未返回工具。');
+      Exit;
+    end;
+
+    Builder := TStringBuilder.Create;
+    try
+      Builder.AppendLine('MCP 已初始化，可用工具:');
+      for Tool in Tools do
+      begin
+        Builder.Append('- ');
+        Builder.Append(Tool.Name);
+        if Tool.Description <> '' then
+        begin
+          Builder.Append(': ');
+          Builder.Append(Tool.Description);
+        end;
+        Builder.AppendLine;
+      end;
+      OnAgentLog('status', Builder.ToString.TrimRight([#13, #10]));
+    finally
+      Builder.Free;
+    end;
+  except
+    on E: Exception do
+      OnAgentLog('error', 'MCP 初始化失败: ' + E.Message);
   end;
 end;
 

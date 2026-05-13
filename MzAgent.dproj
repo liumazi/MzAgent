@@ -1,4 +1,4 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{8F8E4D5A-1234-4567-89AB-CDEF01234568}</ProjectGuid>
         <ProjectVersion>20.2</ProjectVersion>
@@ -118,6 +118,8 @@
         <DCCReference Include="PromptTemplate.pas"/>
         <DCCReference Include="Tools.pas"/>
         <DCCReference Include="ReActAgent.pas"/>
+        <DCCReference Include="Configuration.pas"/>
+        <DCCReference Include="McpStdioClient.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
