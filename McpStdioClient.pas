@@ -26,7 +26,6 @@ type
     function BuildRequest(const Method: string; Params: TJSONObject; Id: Integer): TJSONObject;
     function WaitForOutput(Deadline: UInt64): Boolean;
     function ReadByte(Deadline: UInt64; out B: Byte): Boolean;
-    function ReadPayload(Length: Integer; Deadline: UInt64): string;
     function ReadMessage: TJSONObject;
     function SendRequest(const Method: string; Params: TJSONObject): TJSONObject;
     procedure SendJSON(JSON: TJSONObject);
@@ -173,14 +172,12 @@ end;
 
 procedure TMcpStdioClient.SendJSON(JSON: TJSONObject);
 var
-  Payload, Header: string;
+  Payload: string;
   Bytes: TBytes;
   Written: DWORD;
 begin
-  Payload := JSON.ToJSON;
-  Header := 'Content-Length: ' + IntToStr(Length(TEncoding.UTF8.GetBytes(Payload))) +
-    #13#10#13#10;
-  Bytes := TEncoding.UTF8.GetBytes(Header + Payload);
+  Payload := JSON.ToJSON + #10;
+  Bytes := TEncoding.UTF8.GetBytes(Payload);
 
   if (Length(Bytes) = 0) or not WriteFile(FStdInWrite, Bytes[0], Length(Bytes), Written, nil) or
     (Written <> DWORD(Length(Bytes))) then
@@ -236,69 +233,36 @@ begin
   Result := ReadCount = 1;
 end;
 
-function TMcpStdioClient.ReadPayload(Length: Integer; Deadline: UInt64): string;
-var
-  Bytes: TBytes;
-  Offset: Integer;
-  ReadCount: DWORD;
-begin
-  SetLength(Bytes, Length);
-  Offset := 0;
-  while Offset < Length do
-  begin
-    if not WaitForOutput(Deadline) then
-      raise Exception.Create('等待 MCP 响应超时');
-
-    ReadCount := 0;
-    if not ReadFile(FStdOutRead, Bytes[Offset], Length - Offset, ReadCount, nil) then
-      raise Exception.Create('读取 MCP 响应失败: ' + SysErrorMessage(GetLastError));
-
-    if ReadCount = 0 then
-      raise Exception.Create('MCP 响应提前结束');
-
-    Inc(Offset, ReadCount);
-  end;
-
-  Result := TEncoding.UTF8.GetString(Bytes);
-end;
-
 function TMcpStdioClient.ReadMessage: TJSONObject;
 var
   Deadline: UInt64;
-  HeaderBytes: TBytes;
+  LineBytes: TBytes;
   B: Byte;
-  Header, Line, Payload: string;
-  HeaderLines: TArray<string>;
-  ContentLength, ColonPos: Integer;
+  Payload: string;
   JSONValue: TJSONValue;
 begin
   Deadline := GetTickCount64 + FTimeoutMS;
-  SetLength(HeaderBytes, 0);
-
   repeat
-    if not ReadByte(Deadline, B) then
-      raise Exception.Create('等待 MCP 响应超时');
-    SetLength(HeaderBytes, Length(HeaderBytes) + 1);
-    HeaderBytes[High(HeaderBytes)] := B;
-    Header := TEncoding.ASCII.GetString(HeaderBytes);
-  until EndsText(#13#10#13#10, Header);
+    SetLength(LineBytes, 0);
+    repeat
+      if not ReadByte(Deadline, B) then
+        raise Exception.Create('等待 MCP 响应超时');
 
-  ContentLength := 0;
-  HeaderLines := Header.Split([#13#10], TStringSplitOptions.ExcludeEmpty);
-  for Line in HeaderLines do
-  begin
-    ColonPos := Pos(':', Line);
-    if ColonPos <= 0 then
-      Continue;
+      if B = 10 then
+        Break;
 
-    if SameText(Copy(Line, 1, ColonPos - 1).Trim, 'Content-Length') then
-      ContentLength := StrToIntDef(Copy(Line, ColonPos + 1, MaxInt).Trim, 0);
-  end;
+      SetLength(LineBytes, Length(LineBytes) + 1);
+      LineBytes[High(LineBytes)] := B;
+    until False;
 
-  if ContentLength <= 0 then
-    raise Exception.Create('MCP 响应缺少 Content-Length');
+    if (Length(LineBytes) > 0) and (LineBytes[High(LineBytes)] = 13) then
+      SetLength(LineBytes, Length(LineBytes) - 1);
 
-  Payload := ReadPayload(ContentLength, Deadline);
+    Payload := TEncoding.UTF8.GetString(LineBytes).Trim;
+    if (Payload <> '') and (Payload[1] = #$FEFF) then
+      Delete(Payload, 1, 1);
+  until Payload <> '';
+
   JSONValue := TJSONObject.ParseJSONValue(Payload);
   if not (JSONValue is TJSONObject) then
   begin
@@ -349,30 +313,26 @@ end;
 
 procedure TMcpStdioClient.Initialize;
 var
-  Params, Capabilities, ClientInfo, Response: TJSONObject;
+  Params, ClientInfo, Response: TJSONObject;
 begin
+  // 子节点一创建就 AddPair 给父节点,所有权随父节点级联,
+  // 整个函数只持有 Params 一个根引用。
   Params := TJSONObject.Create;
-  Capabilities := TJSONObject.Create;
-  ClientInfo := TJSONObject.Create;
-  try
-    ClientInfo.AddPair('name', 'MzAgent');
-    ClientInfo.AddPair('version', '1.0');
-    Params.AddPair('protocolVersion', '2024-11-05');
-    Params.AddPair('capabilities', Capabilities);
-    Params.AddPair('clientInfo', ClientInfo);
-    Capabilities := nil;
-    ClientInfo := nil;
+  Params.AddPair('protocolVersion', '2024-11-05');
+  Params.AddPair('capabilities', TJSONObject.Create);
 
-    Response := SendRequest('initialize', Params);
-    try
-      // The first phase only needs to prove the server accepted initialize.
-    finally
-      Response.Free;
-    end;
+  ClientInfo := TJSONObject.Create;
+  Params.AddPair('clientInfo', ClientInfo);
+  ClientInfo.AddPair('name', 'MzAgent');
+  ClientInfo.AddPair('version', '1.0');
+
+  // Params 被 SendRequest 内部通过 BuildRequest 挂到 Request 上,
+  // 随 Request.Free 一并释放,本函数不再拥有 Params,也不能再 Free。
+  Response := SendRequest('initialize', Params);
+  try
+    // The first phase only needs to prove the server accepted initialize.
   finally
-    Params.Free;
-    Capabilities.Free;
-    ClientInfo.Free;
+    Response.Free;
   end;
 end;
 
