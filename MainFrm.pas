@@ -1,4 +1,4 @@
-unit MainFrm;
+﻿unit MainFrm;
 
 interface
 
@@ -30,10 +30,13 @@ type
     FAgent: TReActAgent;
     FToolList: TToolList;
     FIsRunning: Boolean;
+    FMcpInitAttempted: Boolean;
+    FMcpInitSucceeded: Boolean;
     procedure AddChatMessage(const Role, Content: string; Color: TColor = clBlack);
     procedure EnableControls(Enabled: Boolean);
     procedure DoAgentRun(const UserInput: string);
     procedure DiscoverMcpTools;
+    procedure TryInitMcpOnStartup;
     procedure OnAgentLog(const LogType, Message: string);
     procedure OnAgentFinalAnswer(const Answer: string);
     function CheckProjectDir: Boolean;
@@ -65,9 +68,12 @@ begin
   FToolList.Add(TRunTerminalCommandTool.Create);
 
   FIsRunning := False;
+  FMcpInitAttempted := False;
+  FMcpInitSucceeded := False;
 
   ChatMemo.Clear;
   AddChatMessage('system', '欢迎使用 MzAgent！请先选择项目目录，然后输入您的需求。', clGray);
+  TryInitMcpOnStartup;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -191,8 +197,6 @@ procedure TMainForm.DoAgentRun(const UserInput: string);
 var
   FinalAnswer: string;
 begin
-  DiscoverMcpTools;
-
   if Assigned(FAgent) then
     FAgent.Free;
 
@@ -222,6 +226,15 @@ begin
   end;
 end;
 
+procedure TMainForm.TryInitMcpOnStartup;
+begin
+  if FMcpInitAttempted then
+    Exit;
+
+  FMcpInitAttempted := True;
+  DiscoverMcpTools;
+end;
+
 procedure TMainForm.DiscoverMcpTools;
 var
   McpPath, ConfigPath, AttemptedPaths: string;
@@ -230,11 +243,22 @@ var
   Tool: TMcpToolInfo;
   Builder: TStringBuilder;
 begin
-  if not TConfiguration.TryReadValue(edtProjectDir.Text, 'MCP_PATH', McpPath, ConfigPath, AttemptedPaths) or (McpPath = '') then
+  FMcpInitSucceeded := False;
+
+  if not TConfiguration.TryReadValue(edtProjectDir.Text, 'MCP_PATH', McpPath, ConfigPath, AttemptedPaths) then
+  begin
+    OnAgentLog('status', '未找到 MCP_PATH 配置，已跳过 MCP 初始化。');
     Exit;
+  end;
+
+  if McpPath = '' then
+  begin
+    OnAgentLog('status', 'MCP_PATH 为空，已跳过 MCP 初始化。');
+    Exit;
+  end;
 
   try
-    OnAgentLog('status', '正在初始化 MCP: ' + McpPath);
+    OnAgentLog('status', '正在初始化 MCP，' + McpPath);
     Client := TMcpStdioClient.Create(McpPath);
     try
       Tools := Client.DiscoverTools;
@@ -244,6 +268,7 @@ begin
 
     if Length(Tools) = 0 then
     begin
+      FMcpInitSucceeded := True;
       OnAgentLog('status', 'MCP 已初始化，tools/list 未返回工具。');
       Exit;
     end;
@@ -266,6 +291,8 @@ begin
     finally
       Builder.Free;
     end;
+
+    FMcpInitSucceeded := True;
   except
     on E: Exception do
       OnAgentLog('error', 'MCP 初始化失败: ' + E.Message);
