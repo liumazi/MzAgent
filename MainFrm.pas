@@ -275,19 +275,16 @@ begin
 
     Builder := TStringBuilder.Create;
     try
-      Builder.AppendLine('MCP 已初始化，可用工具:');
-      for Tool in Tools do
+      Builder.Append('MCP 已初始化，可用工具（');
+      Builder.Append(Length(Tools));
+      Builder.Append('）：');
+      for var I := 0 to High(Tools) do
       begin
-        Builder.Append('- ');
-        Builder.Append(Tool.Name);
-        if Tool.Description <> '' then
-        begin
-          Builder.Append(': ');
-          Builder.Append(Tool.Description);
-        end;
-        Builder.AppendLine;
+        if I > 0 then
+          Builder.Append('、');
+        Builder.Append(Tools[I].Name);
       end;
-      OnAgentLog('status', Builder.ToString.TrimRight([#13, #10]));
+      OnAgentLog('status', Builder.ToString);
     finally
       Builder.Free;
     end;
