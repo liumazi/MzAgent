@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
-  Vcl.ComCtrls, Tools, ReActAgent, System.Threading, ToolsAPI;
+  Vcl.ComCtrls, InternalTools, ReActAgent, System.Threading, ToolsAPI;
 
 type
   TMzAgentIDEFrame = class(TFrame)

@@ -116,7 +116,7 @@
             <Form>MainForm</Form>
         </DCCReference>
         <DCCReference Include="PromptTemplate.pas"/>
-        <DCCReference Include="Tools.pas"/>
+        <DCCReference Include="InternalTools.pas"/>
         <DCCReference Include="ReActAgent.pas"/>
         <DCCReference Include="Configuration.pas"/>
         <DCCReference Include="McpStdioClient.pas"/>

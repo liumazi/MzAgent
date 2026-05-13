@@ -4,7 +4,7 @@ uses
   Vcl.Forms,
   MainFrm in 'MainFrm.pas' {MainForm},
   PromptTemplate in 'PromptTemplate.pas',
-  Tools in 'Tools.pas',
+  InternalTools in 'InternalTools.pas',
   ReActAgent in 'ReActAgent.pas',
   Configuration in 'Configuration.pas',
   McpStdioClient in 'McpStdioClient.pas';

@@ -1,11 +1,11 @@
-﻿unit MainFrm;
+unit MainFrm;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.Threading,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.FileCtrl,
-  Tools, ReActAgent, Configuration, McpStdioClient;
+  InternalTools, ReActAgent, Configuration, McpStdioClient;
 
 type
   TMainForm = class(TForm)

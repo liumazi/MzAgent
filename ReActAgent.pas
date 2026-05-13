@@ -1,10 +1,10 @@
-﻿unit ReActAgent;
+unit ReActAgent;
 
 interface
 
 uses
   System.SysUtils, System.Classes, System.Generics.Collections, System.RegularExpressions,
-  System.Net.HttpClient, System.Net.URLClient, System.JSON, Tools, PromptTemplate, Configuration;
+  System.Net.HttpClient, System.Net.URLClient, System.JSON, InternalTools, PromptTemplate, Configuration;
 
 type
   TChatMessage = record

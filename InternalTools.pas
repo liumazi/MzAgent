@@ -1,4 +1,4 @@
-﻿unit Tools;
+unit InternalTools;
 
 interface
 
